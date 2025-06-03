@@ -1,27 +1,28 @@
 // service-worker.js
 
 const CACHE_NAME = 'quiz-app-cache-v1';
+// GitHub Pagesのサブディレクトリに対応するため、urlsToCacheのパスを相対パスで記述
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/main.js',
-  '/pastResults.js',
-  '/questionList.js',
-  '/questions.js',
-  '/quiz.js',
-  '/textbookContent.js',
-  '/utils.js',
-  '/manifest.json',
-  // アイコンファイルもキャッシュ対象に含める
-  '/icons/icon-72x72.png',
-  '/icons/icon-96x96.png',
-  '/icons/icon-128x128.png',
-  '/icons/icon-144x144.png',
-  '/icons/icon-152x152.png',
-  '/icons/icon-192x192.png',
-  '/icons/icon-384x384.png',
-  '/icons/icon-512x512.png'
+  './', // index.html がルートの場合のパス
+  './index.html',
+  './styles.css',
+  './main.js',
+  './pastResults.js',
+  './questionList.js',
+  './questions.js',
+  './quiz.js',
+  './textbookContent.js',
+  './utils.js',
+  './manifest.json',
+  // アイコンファイルもキャッシュ対象に含める（パスを相対パスで指定）
+  './icons/icon-72x72.png',
+  './icons/icon-96x96.png',
+  './icons/icon-128x128.png',
+  './icons/icon-144x144.png',
+  './icons/icon-152x152.png',
+  './icons/icon-192x192.png',
+  './icons/icon-384x384.png',
+  './icons/icon-512x512.png'
   // 必要に応じて他のアセット（画像など）も追加
 ];
 
@@ -49,7 +50,9 @@ self.addEventListener('fetch', (event) => {
         return fetch(event.request).then(
           (response) => {
             // レスポンスが不正な場合（HTTPエラー、Opaqueレスポンスなど）はキャッシュしない
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            // Opaqueレスポンスは、クロスオリジンリクエストでCORSポリシーに違反した場合に発生し、
+            // そのレスポンスをキャッシュすることはできません。
+            if (!response || response.status !== 200 || response.type === 'opaque') {
               return response;
             }
 
