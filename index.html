@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
- <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>生成AIパスポート試験問題アプリ</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AIパスポート">
-  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-</head>
+  <link rel="apple-touch-icon" href="./icons/icon-192x192.png">
+  </head>
 <body>
   <h1>生成AIパスポート試験問題アプリ</h1>
 
@@ -32,35 +32,36 @@
 
   <div id="quiz-container" class="screen" style="display:none">
     <div id="quiz-header">
-      <div id="timer">残り時間: 60:00</div>
-      <button class="back-button" onclick="backToMenuFromQuiz()">最初の画面に戻る</button>
+      <p id="timer">残り時間: 60:00</p>
+      <p>問題 <span id="current-question-number"></span> / <span id="total-questions"></span></p>
     </div>
-    <div id="question-text"></div>
-    <div id="choices"></div>
+    <div id="question-area"></div>
     <div class="quiz-navigation">
-      <button id="prev-button" onclick="prevQuestion()" disabled>前の問題</button>
-      <button id="next-button" onclick="nextQuestion()">次の問題</button>
-     </div>
+      <button onclick="prevQuestion()">前の問題</button>
+      <button onclick="nextQuestion()">次の問題</button>
+      <button onclick="submitQuiz()">採点する</button>
+    </div>
+    <button class="back-button" onclick="backToMenuFromQuiz()">メニューに戻る</button>
   </div>
 
   <div id="results" class="screen" style="display:none">
     <h2>結果</h2>
     <div id="results-summary"></div>
     <div id="results-details"></div>
-    <button class="back-button" onclick="backToMenuFromResult()">最初の画面に戻る</button>
+    <button class="back-button" onclick="backToMenuFromResult()">メニューに戻る</button>
   </div>
 
-  <div id="past-results" class="screen" style="display:none;">
+  <div id="past-results" class="screen" style="display:none">
     <h2>過去の結果</h2>
-    <button class="back-button" onclick="backToMenuFromPastResults()">最初の画面に戻る</button>
-    <button class="clear-results-button" onclick="clearResults()">全履歴を削除</button>
+    <button class="back-button" onclick="backToMenuFromPastResults()">メニューに戻る</button>
+    <button class="clear-results-button">全履歴消去</button>
     <div id="past-results-list"></div>
     <div id="past-results-details"></div>
   </div>
 
-  <div id="question-list" class="screen" style="display:none;">
-    <h2>問題一覧</h2>
-    <button class="back-button" onclick="backToMenuFromQuestionList()">最初の画面に戻る</button>
+  <div id="question-list" class="screen" style="display:none">
+    <h2>各問題一覧</h2>
+    <button class="back-button" onclick="backToMenuFromQuestionList()">メニューに戻る</button>
     <div id="breadcrumb" class="breadcrumb"></div>
 
     <div id="chapter-list" class="list-container">
@@ -82,12 +83,12 @@
       <div class="button-grid"></div>
     </div>
     
-    <div id="question-detail-list" class="list-container" style="display:none;">
+    <div id="question-detail-list" class="list-container" style="display:none">
       <button class="back-button" onclick="backToLearningItemList()">学習項目一覧に戻る</button>
       <div class="button-grid"></div>
     </div>
-
-    <div id="question-detail" class="list-container" style="display:none;">
+    
+    <div id="question-detail-display" class="list-container" style="display:none">
       <button class="back-button" onclick="backToQuestionDetailList()">問題一覧に戻る</button>
       <div id="question-detail-content"></div>
     </div>
@@ -122,10 +123,27 @@
 
   <script src="utils.js"></script>
   <script src="questions.js"></script>
-  <script src="textbookContent.js"></script>
   <script src="quiz.js"></script>
   <script src="pastResults.js"></script>
   <script src="questionList.js"></script>
+  <script src="textbookContent.js"></script>
   <script src="main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // GitHub Pagesのサブディレクトリに対応するため、ベースパスを取得
+        // 例: y-narusaka.github.io/PWAtest/ -> /PWAtest/
+        // 例: y-narusaka.github.io/ -> /
+        const baseUrl = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+        navigator.serviceWorker.register(baseUrl + 'service-worker.js', { scope: baseUrl })
+          .then(registration => {
+            console.log('Service Worker registered with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed: ', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
