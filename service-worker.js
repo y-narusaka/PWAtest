@@ -1,6 +1,6 @@
 // service-worker.js
 
-const CACHE_NAME = 'quiz-app-cache-v1';
+const CACHE_NAME = 'quiz-app-cache-v2'; // キャッシュの名前を更新して新しいService Workerのインストールを促す
 // GitHub Pagesのサブディレクトリに対応するため、urlsToCacheのパスを相対パスで記述
 const urlsToCache = [
   './', // index.html がルートの場合のパス
